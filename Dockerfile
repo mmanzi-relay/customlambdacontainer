@@ -2,7 +2,10 @@
 ARG FUNCTION_DIR="/function"
 
 # this can be any Linux image we want
-FROM node:14-slim as build-image
+FROM node:14-buster as build-image
+
+# include global arg in this stage of the build
+ARG FUNCTION_DIR
 
 # install resources needed to build the AWS Lambda client tool
 RUN apt-get update && \
@@ -22,16 +25,22 @@ RUN mkdir -p ${FUNCTION_DIR}
 # copy Lambda code to be used in the final container
 COPY app/* ${FUNCTION_DIR}
 
+# move into the FUNCTION_DIR to install dependencies
+WORKDIR ${FUNCTION_DIR}
+
 # don't install Lambda runtime interface client (RIC) because it's in our
 # package.json (that way we can manage the version in the same place as all
 # other packages)
 # RUN npm install aws-lambda-ric
 
+# DEBUG
+# RUN pwd && ls -al . && exit 1
+
 # install our app's dependencies
-RUN npm ci
+RUN npm install
 
 # get a fresh copy of the base image for the final container
-FROM node:14-slim
+FROM node:14-buster-slim
 
 # carry over FUNCTION_DIR into the final container
 ARG FUNCTION_DIR

@@ -3,10 +3,17 @@
   "version": "0.0.0",
   "description": "Testing creating a Lambda from a custom container image",
   "main": "app/app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmanzi-relay/customlambdacontainer"
+  },
   "scripts": {},
   "author": "Matt Manzi",
   "license": "ISC",
   "dependencies": {
-    "aws-lambda-ric": "^1.1.0"
+    "aws-lambda-ric": "^1.1.0",
+    "faker": "^5.5.3",
+    "get-stream": "^6.0.1",
+    "pdfkit": "^0.12.3"
   }
 }

@@ -1,0 +1,7 @@
+# don't include anything...
+*
+
+# except...
+!app/app.js
+!app/package.json
+!app/package-lock.json
