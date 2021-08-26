@@ -19,11 +19,11 @@ RUN apt-get update && \
 # carry over FUNCTION_DIR for the next build stage
 ARG FUNCTION_DIR
 
-# create the actual function directory to be used in the final container
+# create the actual function directory to be used in the final image
 RUN mkdir -p ${FUNCTION_DIR}
 
-# copy Lambda code to be used in the final container
-COPY app/* ${FUNCTION_DIR}
+# copy package-lock.json and package.json to be used in the final image
+COPY app/package*.json ${FUNCTION_DIR}
 
 # move into the FUNCTION_DIR to install dependencies
 WORKDIR ${FUNCTION_DIR}
@@ -33,22 +33,22 @@ WORKDIR ${FUNCTION_DIR}
 # other packages)
 # RUN npm install aws-lambda-ric
 
-# DEBUG
-# RUN pwd && ls -al . && exit 1
-
 # install our app's dependencies
-RUN npm install
+RUN npm ci
 
-# get a fresh copy of the base image for the final container
+# copy Lambda code to be used in the final image
+COPY app/* ${FUNCTION_DIR}
+
+# get a fresh copy of the base image for the final image
 FROM node:14-buster-slim
 
-# carry over FUNCTION_DIR into the final container
+# carry over FUNCTION_DIR into the final image
 ARG FUNCTION_DIR
 
 # move into the FUNCTION_DIR
 WORKDIR ${FUNCTION_DIR}
 
-# copy code from build-image to the final container
+# copy code from build-image to the final image
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
 ENTRYPOINT [ "/usr/local/bin/npx", "aws-lambda-ric" ]
