@@ -22,10 +22,13 @@ RUN mkdir -p ${FUNCTION_DIR}
 # copy Lambda code to be used in the final container
 COPY app/* ${FUNCTION_DIR}
 
-# install Lambda runtime interface client (RIC)
-RUN pip install \
-  --target ${FUNCTION_DIR} \
-  awslambdaric
+# don't install Lambda runtime interface client (RIC) because it's in our
+# package.json (that way we can manage the version in the same place as all
+# other packages)
+# RUN npm install aws-lambda-ric
+
+# install our app's dependencies
+RUN npm ci
 
 # get a fresh copy of the base image for the final container
 FROM node:14-slim
@@ -39,5 +42,5 @@ WORKDIR ${FUNCTION_DIR}
 # copy code from build-image to the final container
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
-ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
+ENTRYPOINT [ "/usr/local/bin/npx", "aws-lambda-ric" ]
 CMD [ "app.handler" ]
