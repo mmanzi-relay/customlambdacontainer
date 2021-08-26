@@ -1,6 +1,6 @@
 {
   "name": "customlambdacontainer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Testing creating a Lambda from a custom container image",
   "main": "app/app.js",
   "repository": {
