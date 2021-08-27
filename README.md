@@ -8,6 +8,35 @@ Following along with [AWS](https://docs.aws.amazon.com/lambda/latest/dg/images-c
 
 I'll be implementing the fake-letter Node application from this [post](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/).
 
+## Build & Deploy Steps
+
+1. Create a repository if you don't already have one. Grab the repository URI, you'll use this where `${REPO_URI}` is mentioned.
+
+   ```shell
+   aws ecr create-repository --repository-name random-letter --image-scanning-configuration scanOnPush=true
+   ```
+
+1. Build and tag the image.
+
+   ```shell
+   docker build -t random-letter .
+   docker tag random-letter:latest ${REPO_URI}/random-letter:latest
+   ```
+
+1. Authenticate Docker CLI with AWS ECR repository.
+
+   ```shell
+   aws ecr get-login-password | docker login --username AWS --password-stdin ${REPO_URI}
+   ```
+
+1. Push the image to ECR.
+
+   ```shell
+   docker push ${REPO_URI}/random-letter:latest
+   ```
+
+1. Follow the steps in this [blog post](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) starting at `Here I am using the AWS Management Console to complete the creation of the function...` to create the Lambda function from the AWS Console.
+
 ## Directory Setup
 
 It seems like there may be two possible approaches to setting up projects, one that resembles a Serverless-framework-style collection of Lambdas and another that completely isolates each Lambda function.
