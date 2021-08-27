@@ -1,3 +1,5 @@
+'use strict';
+
 const PDFDocument = require('pdfkit');
 const faker = require('faker');
 const getStream = require('get-stream');
