@@ -25,8 +25,8 @@ exports.handler = async (event) => {
   doc.text(faker.name.findName(), { align: 'right' });
   doc.end();
 
-  pdfBuffer = await getStream.buffer(doc);
-  pdfBase64 = pdfBuffer.toString('base64');
+  const pdfBuffer = await getStream.buffer(doc);
+  const pdfBase64 = pdfBuffer.toString('base64');
 
   const response = {
     statusCode: 200,
